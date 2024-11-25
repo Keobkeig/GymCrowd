@@ -48,9 +48,3 @@ data class WorkoutSummary(
     @Json(name = "date") val date: LocalDate
 )
 
-@JsonClass(generateAdapter = true)
-data class UserSummary(
-    @Json(name = "user_id") val userId: Int,
-    @Json(name = "username") val username: String,
-    @Json(name = "name") val name: String
-)

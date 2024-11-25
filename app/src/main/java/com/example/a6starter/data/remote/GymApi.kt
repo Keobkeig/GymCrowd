@@ -1,6 +1,7 @@
 package com.example.a6starter.data.remote
 
 import com.example.a6starter.data.entities.CrowdData
+import com.example.a6starter.data.entities.CrowdDataRequest
 import com.example.a6starter.data.entities.Gym
 import com.example.a6starter.data.entities.GymEntity
 
@@ -39,7 +40,7 @@ interface GymApi {
     // Create a new crowd data entry
     @POST("crowd-data/")
     suspend fun createCrowdData(
-        @Body crowdDataRequest: CrowdDataRequest
+//        @Body crowdDataRequest: CrowdDataRequest
     ): Response<CrowdData>
 
     // Get details of specific crowd data
@@ -52,7 +53,7 @@ interface GymApi {
     @PUT("crowd-data/{id}/")
     suspend fun updateCrowdData(
         @Path("id") crowdDataId: Int,
-        @Body crowdDataRequest: CrowdDataRequest
+//        @Body crowdDataRequest: CrowdDataRequest
     ): Response<CrowdData>
 
     // Delete specific crowd data

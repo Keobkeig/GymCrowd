@@ -2,8 +2,6 @@ package com.example.a6starter.ui.screens.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.a6starter.data.entities.DogBreed
-import com.example.a6starter.data.model.DogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,10 +17,10 @@ data class MainScreenViewState(
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val dogRepository: DogRepository,
+//    private val dogRepository: DogRepository,
 ) : ViewModel() {
-    private val favoritesFlow = MutableStateFlow(emptyList<String>())
-    private val allBreedsFlow = MutableStateFlow(emptyList<DogBreed>())
+//    private val favoritesFlow = MutableStateFlow(emptyList<String>())
+//    private val allBreedsFlow = MutableStateFlow(emptyList<DogBreed>())
     private var currentPage = 0
 
     /**
@@ -32,21 +30,21 @@ class MainScreenViewModel @Inject constructor(
      * Each time either of the flows update, we call `createViewState` to get a new view state that
      * reflects the updated information.
      */
-    val mainScreenViewState: StateFlow<MainScreenViewState> =
-        combine(favoritesFlow, allBreedsFlow) { favorites, allBreeds ->
-            createViewState(favorites, allBreeds)
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, MainScreenViewState())
+//    val mainScreenViewState: StateFlow<MainScreenViewState> =
+//        combine(favoritesFlow, allBreedsFlow) { favorites, allBreeds ->
+//            createViewState(favorites, allBreeds)
+//        }.stateIn(viewModelScope, SharingStarted.Eagerly, MainScreenViewState())
 
     init {
         loadNextPage()
     }
 
-    private fun createViewState(
-        favorites: List<String>,
-        allBreeds: List<DogBreed>
-    ): MainScreenViewState {
-        TODO("Fill out this function to create your view state")
-    }
+//    private fun createViewState(
+//        favorites: List<String>,
+//        allBreeds: List<DogBreed>
+//    ): MainScreenViewState {
+//        TODO("Fill out this function to create your view state")
+//    }
 
 
     /**
