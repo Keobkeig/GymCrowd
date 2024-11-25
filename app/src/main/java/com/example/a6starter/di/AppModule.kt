@@ -1,6 +1,6 @@
 package com.example.a6starter.di
 
-import com.example.a6starter.data.remote.DogBreedApi
+import com.example.a6starter.data.remote.GymApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -31,11 +31,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMyApi(moshi: Moshi): DogBreedApi {
+    fun provideMyApi(moshi: Moshi): GymApi {
         return Retrofit.Builder()
             .baseUrl("https://dogapi.dog/api/v2/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-            .create(DogBreedApi::class.java)
+            .create(GymApi::class.java)
     }
 }
