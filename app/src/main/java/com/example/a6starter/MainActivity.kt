@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,30 +17,71 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Gym
 import com.example.a6starter.data.entities.GymEntity
 import com.example.a6starter.data.entities.GymSummary
+import com.example.a6starter.ui.screens.main.LoginScreen
 import com.example.a6starter.ui.screens.main.MainScreen
+import com.example.a6starter.ui.screens.main.ProfileScreen
 import com.example.a6starter.ui.theme.A6StarterTheme
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-//test
+
+
+@kotlinx.serialization.Serializable
+sealed class Screen(val route: String) {
+    object HomeScreen : Screen("HomeScreen")
+    object LoginScreen : Screen("LoginScreen")
+    object ProfileScreen : Screen("ProfileScreen")
+}
+
+
+fun NavBackStackEntry.toScreen(): Screen? =
+    when (destination.route) {
+        Screen.HomeScreen.route -> Screen.HomeScreen
+        Screen.LoginScreen.route -> Screen.LoginScreen
+        Screen.ProfileScreen.route -> Screen.ProfileScreen
+        else -> null
+    }
+
+
+data class NavItem(
+    val screen: Screen,
+    val label: String,
+    val icon: ImageVector
+)
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +89,51 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             A6StarterTheme {
-                MainScreen()
+                val tabs = listOf(
+                    NavItem(
+                        label = "Home",
+                        icon = Icons.Filled.Home,
+                        screen = Screen.HomeScreen,
+                    ),
+                    NavItem(
+                        label = "Login",
+                        icon = Icons.Filled.AddCircle,
+                        screen = Screen.LoginScreen,
+                    ),
+                    NavItem(
+                        label = "Profile",
+                        icon = Icons.Filled.AddCircle,
+                        screen = Screen.ProfileScreen,
+                    )
+                )
+                val navController = rememberNavController()
+                val navBackStackEntry = navController.currentBackStackEntryAsState().value
+
+                Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
+                    NavigationBar {
+                        tabs.map { item ->
+                            NavigationBarItem(
+                                selected = navBackStackEntry?.destination?.route == item.screen.route,
+                                onClick = {
+                                    navController.navigate(item.screen.route)
+                                },
+                                icon = { Icon(imageVector = item.icon, contentDescription = null) },
+                                label = { Text(text = item.label) }
+                            )
+                        }
+                    }
+                }) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.HomeScreen.route
+                        ) {
+                            composable(Screen.HomeScreen.route) { LoginScreen() } //Change to mainscreen once it's fully implemented
+                            composable(Screen.LoginScreen.route) { LoginScreen() }
+                            composable(Screen.ProfileScreen.route) { ProfileScreen() }
+                        }
+                    }
+                }
             }
         }
     }
@@ -159,7 +245,7 @@ fun LocalDateTime.formatDateTime(): String {
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun GymGridPreview() {
+fun GymGridPreview() { //This is our previewable function
     A6StarterTheme {
 
         val sampleCrowdData = listOf(
