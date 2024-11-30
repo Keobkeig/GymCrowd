@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,17 +94,17 @@ class MainActivity : ComponentActivity() {
                 val tabs = listOf(
                     NavItem(
                         label = "Home",
-                        icon = Icons.Filled.Home,
+                        icon = dumbbell(),
                         screen = Screen.HomeScreen,
                     ),
                     NavItem(
                         label = "Login",
-                        icon = Icons.Filled.AddCircle,
+                        icon = login(),
                         screen = Screen.LoginScreen,
                     ),
                     NavItem(
                         label = "Profile",
-                        icon = Icons.Filled.AddCircle,
+                        icon = Icons.Filled.Person,
                         screen = Screen.ProfileScreen,
                     )
                 )
@@ -329,6 +331,15 @@ fun GymGridPreview() { //This is our previewable function
     }
 }
 
+@Composable
+fun dumbbell(): ImageVector {
+    return ImageVector.vectorResource(id = R.drawable.baseline_fitness_center_24)
+}
+
+@Composable
+fun login(): ImageVector {
+    return ImageVector.vectorResource(id = R.drawable.baseline_login_24)
+}
 
 
 @Preview(showBackground = true)

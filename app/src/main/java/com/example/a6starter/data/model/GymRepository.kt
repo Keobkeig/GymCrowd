@@ -10,11 +10,12 @@ import javax.inject.Singleton
 class GymRepository @Inject constructor(
     private val gymApi: GymApi,
 ) {
-    suspend fun getGyms(pageNumber: Int): Response<GymEntity> {
-        TODO(
-            "Implement this function, all you need to do here is return" +
-                    "the call from your API"
-        )
+    suspend fun getGyms(pageNumber: Int): Response<List<GymEntity>> {
+        return gymApi.getGyms(pageNumber)
+//        TODO(
+//            "Implement this function, all you need to do here is return" +
+//                    "the call from your API"
+//        )
     }
 
 }
