@@ -1,5 +1,9 @@
 package com.example.a6starter.ui.screens.main
 
+import android.R.attr.enabled
+import android.R.attr.onClick
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,11 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,41 +31,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.a6starter.GymGrid
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.w3c.dom.Text
 
 private const val LOADING_KEY = "LOADING"
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
-    Text(
-        "TODO: Create your main screen here, note that you can access the viewModel from " +
-                "the composable parameter ($viewModel)"
-    )
-    val lazyListState = rememberLazyListState()
-    // To see when we need to load more data, we create a stateful variable based on the lazy list
-    //  state. It is true if our loading circle is visible.
-    val loadingCircleVisible by remember {
-        derivedStateOf {
-            lazyListState.layoutInfo.visibleItemsInfo.any { it.key == LOADING_KEY }
+    val gyms = viewModel.gymsFlow.collectAsState(initial = emptyList())
+    val errorMessage = viewModel.errorMessage.collectAsState(initial = null)
+
+    if (gyms.value.isNotEmpty()) {
+        GymGrid(gyms = gyms.value)
+    } else if (errorMessage.value != null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(text = errorMessage.value ?: "An error occurred.")
         }
-    }
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        // We then use snapshotFlow to convert this stateful variable into a flow, so this way
-        //  we can observe and react to its changes.
-        snapshotFlow { loadingCircleVisible }.onEach {
-            // TODO call load next page here
-        }.launchIn(coroutineScope)
-    }
-
-    LazyColumn(state = lazyListState) {
-        items(TODO("Add your list items here")) {
-
-        }
-        item(key = LOADING_KEY) {
-            CircularProgressIndicator()
+    } else {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(text = "Loading gyms...")
         }
     }
 }
@@ -84,7 +77,7 @@ fun LoginScreen(){
                     placeholder = { Text("Enter Username here") }
                 )
             }
-            Row{
+            Row {
                 var text by remember { mutableStateOf("") }
                 TextField(
                     value = text,
