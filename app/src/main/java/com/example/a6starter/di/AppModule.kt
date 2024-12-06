@@ -33,7 +33,7 @@ object AppModule {
     @Singleton
     fun provideMyApi(moshi: Moshi): GymApi {
         return Retrofit.Builder()
-            .baseUrl("http://127.0.0.1:8000/")
+            .baseUrl("https://dogapi.dog/api/v2/") //TODO(): add proper link
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(GymApi::class.java)

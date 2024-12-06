@@ -1,7 +1,6 @@
 package com.example.a6starter.data.remote
 
 import com.example.a6starter.data.entities.CrowdData
-import com.example.a6starter.data.entities.CrowdDataRequest
 import com.example.a6starter.data.entities.Gym
 import com.example.a6starter.data.entities.GymEntity
 
@@ -23,9 +22,7 @@ interface GymApi {
 
     // Get a list of gyms
     @GET("gyms/")
-    suspend fun getGyms(
-        @Query("page") pageNumber: Int // Optional pagination parameter
-    ): Response<List<GymEntity>>
+    suspend fun getGyms(): Response<GymEntity>
 
     // Get details of a specific gym
     @GET("gyms/{id}/")

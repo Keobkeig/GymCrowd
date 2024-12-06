@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp").version("2.0.0-1.0.24")
 }
 
 android {
@@ -64,8 +65,19 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation ("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
+    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
 }
 
 // Allow references to generated code

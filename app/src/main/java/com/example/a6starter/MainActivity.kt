@@ -18,9 +18,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -28,10 +31,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,13 +44,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Gym
-import com.example.a6starter.data.entities.GymSummary
 import com.example.a6starter.ui.screens.main.LoginScreen
+import com.example.a6starter.ui.screens.main.MainScreen
 import com.example.a6starter.ui.screens.main.ProfileScreen
 import com.example.a6starter.ui.theme.A6StarterTheme
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -81,13 +84,11 @@ data class NavItem(
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var username by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-
             A6StarterTheme {
                 val tabs = listOf(
                     NavItem(
@@ -124,19 +125,12 @@ class MainActivity : ComponentActivity() {
                     }
                 }) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        NavHost(navController = navController, startDestination = Screen.LoginScreen.route) {
-                            composable(Screen.LoginScreen.route) {
-                                LoginScreen(
-                                    username = { username = it },
-                                    password = { password = it }
-                                )
-                            }
-                            composable(Screen.LoginScreen.route) {
-                                LoginScreen(
-                                    username = { username = it },
-                                    password = { password = it }
-                                )
-                            }
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.HomeScreen.route
+                        ) {
+                            composable(Screen.HomeScreen.route) { MainScreen() } //Change to mainscreen once it's fully implemented
+                            composable(Screen.LoginScreen.route) { LoginScreen() }
                             composable(Screen.ProfileScreen.route) { ProfileScreen() }
                         }
                     }
@@ -222,7 +216,7 @@ fun GymCard(gym: Gym) {
                     textAlign = TextAlign.Start
                 )
                 Text(
-                    text = "Last Updated: ${crowdData.lastUpdated.formatDateTime()}",
+                    text = "Last Updated: ${crowdData.lastUpdated}",
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Start
                 )
@@ -258,10 +252,9 @@ fun GymGridPreview() { //This is our previewable function
         val sampleCrowdData = listOf(
             CrowdData(
                 crowdId = 1,
-                gym = GymSummary(gymId = 1, name = "Fitness Hub"),
                 occupancy = 50,
                 percentageFull = 75.0,
-                lastUpdated = LocalDateTime.now()
+                lastUpdated = LocalDateTime.now().toString()
             )
         )
 
@@ -272,7 +265,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Fitness Hub",
                 location = "123 Main St",
                 type = "Public",
-                createdAt = LocalDateTime.now(),
                 crowdData = sampleCrowdData
             ),
             Gym(
@@ -280,7 +272,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Peak Performance",
                 location = "456 Elm St",
                 type = "Private",
-                createdAt = LocalDateTime.now(),
                 crowdData = sampleCrowdData
             ),
             Gym(
@@ -288,7 +279,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Iron Paradise",
                 location = "789 Maple Ave",
                 type = "Public",
-                createdAt = LocalDateTime.now(),
                 crowdData = sampleCrowdData
             ),
             Gym(
@@ -296,7 +286,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "The Fit Factory",
                 location = "101 Oak Rd",
                 type = "Private",
-                createdAt = LocalDateTime.now(),
                 crowdData = sampleCrowdData
             ),
             Gym(
@@ -304,7 +293,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Sweat Zone",
                 location = "202 Pine Ln",
                 type = "Public",
-                createdAt = LocalDateTime.now(),
                 crowdData = null
             ),
             Gym(
@@ -312,7 +300,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Wellness Center",
                 location = "303 Cedar Dr",
                 type = "Public",
-                createdAt = LocalDateTime.now(),
                 crowdData = null
             ),
             Gym(
@@ -320,7 +307,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Muscle Mansion",
                 location = "404 Birch Blvd",
                 type = "Private",
-                createdAt = LocalDateTime.now(),
                 crowdData = null
             ),
             Gym(
@@ -328,7 +314,6 @@ fun GymGridPreview() { //This is our previewable function
                 name = "Health Haven",
                 location = "505 Walnut St",
                 type = "Public",
-                createdAt = LocalDateTime.now(),
                 crowdData = null
             )
         )
