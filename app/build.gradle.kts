@@ -15,7 +15,8 @@ android {
     defaultConfig {
         applicationId = "com.example.a6starter"
         minSdk = 24
-        targetSdk = 35
+        //noinspection OldTargetApi
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

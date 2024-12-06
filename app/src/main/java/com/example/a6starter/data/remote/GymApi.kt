@@ -2,8 +2,6 @@ package com.example.a6starter.data.remote
 
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Gym
-import com.example.a6starter.data.entities.GymEntity
-
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -22,7 +20,7 @@ interface GymApi {
 
     // Get a list of gyms
     @GET("gyms/")
-    suspend fun getGyms(): Response<GymEntity>
+    suspend fun getGyms(): Response<List<Gym>>
 
     // Get details of a specific gym
     @GET("gyms/{id}/")

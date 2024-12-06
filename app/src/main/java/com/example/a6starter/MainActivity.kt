@@ -59,7 +59,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-@kotlinx.serialization.Serializable
+@Serializable
 sealed class Screen(val route: String) {
     object HomeScreen : Screen("HomeScreen")
     object LoginScreen : Screen("LoginScreen")
@@ -171,7 +171,7 @@ fun GymCard(gym: Gym) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp), // Adjust height as needed,
+            .height(180.dp), // Adjust height as needed,
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(226, 190, 241) //colors of container
@@ -192,16 +192,10 @@ fun GymCard(gym: Gym) {
                 textAlign = TextAlign.Start
             )
             Text(
-                text = "Location: ${gym.location}",
+                text = gym.location,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start
             )
-            Text(
-                text = "Type: ${gym.type}",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Start
-            )
-
             // Display crowd data if available
             if (gym.crowdData != null && gym.crowdData.isNotEmpty()) {
                 val crowdData = gym.crowdData.first() //TODO: Assuming we're displaying the first entry
@@ -215,11 +209,11 @@ fun GymCard(gym: Gym) {
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Start
                 )
-                Text(
-                    text = "Last Updated: ${crowdData.lastUpdated}",
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Start
-                )
+//                Text(
+//                    text = "Last Updated: ${crowdData.lastUpdated}",
+//                    style = MaterialTheme.typography.bodySmall,
+//                    textAlign = TextAlign.Start
+//                )
             } else {
                 Text(
                     text = "Crowd data not available",
@@ -254,7 +248,8 @@ fun GymGridPreview() { //This is our previewable function
                 crowdId = 1,
                 occupancy = 50,
                 percentageFull = 75.0,
-                lastUpdated = LocalDateTime.now().toString()
+                lastUpdated = LocalDateTime.now().toString(),
+                gym = 1
             )
         )
 

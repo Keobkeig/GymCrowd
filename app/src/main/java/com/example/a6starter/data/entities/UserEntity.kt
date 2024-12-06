@@ -22,7 +22,6 @@ data class User(
 data class UserPreference(
     @Json(name = "preference_id") val preferenceId: Int,
     @Json(name = "user") val user: UserSummary,
-    @Json(name = "gym") val gym: GymSummary,
     @Json(name = "max_crowd_level") val maxCrowdLevel: Double,
     @Json(name = "created_at") val createdAt: LocalDateTime
 )
