@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -64,38 +66,102 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun ProfileScreen(){
+fun ProfileScreen()
+{
 
 }
 
+
 @Composable
-fun LoginScreen(){
-    Box(modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center){
-        Column{
-            Row {
-                var text by remember { mutableStateOf("") }
-                TextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    placeholder = { Text("Enter Username here") }
-                )
+fun LoginScreen(username: (String) -> Unit, password: (String) -> Unit) {
+    var uname by remember { mutableStateOf("") }
+    var pword by remember { mutableStateOf("") }
+    var showNameScreen by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column {
+            if (showNameScreen) {
+                Name()
+                Email()
             }
-            Row{
-                var text by remember { mutableStateOf("") }
-                TextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    placeholder = { Text("Enter Password here") }
-                )
+
+            TextField(
+                value = uname,
+                onValueChange = {
+                    uname = it
+                    username(it)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text("Enter Username") }
+            )
+
+            TextField(
+                value = pword,
+                onValueChange = {
+                    pword = it
+                    password(it)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text("Enter Password") },
+                visualTransformation = PasswordVisualTransformation()
+            )
+
+            Button(
+                onClick = {
+                },
+                enabled = uname.isNotBlank() && pword.isNotBlank(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Login")
+            }
+
+            Button(
+                onClick = {
+                    showNameScreen = true
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Sign Up")
             }
         }
-
     }
+}
+
+@Composable
+fun Name() {
+    var text by remember { mutableStateOf("") }
+
+    TextField(
+        value = text,
+        onValueChange = { text = it },
+        placeholder = { Text("Enter Name") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    )
+}
+
+@Composable
+fun Email() {
+    var text by remember { mutableStateOf("") }
+
+    TextField(
+        value = text,
+        onValueChange = { text = it },
+        placeholder = { Text("Enter Email") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    )
 }
