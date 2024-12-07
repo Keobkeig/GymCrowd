@@ -126,7 +126,7 @@ class MainActivity : ComponentActivity() {
             A6StarterTheme {
                 val tabs = listOf(
                     NavItem(
-                        label = "Home",
+                        label = "Gyms",
                         icon = dumbbell(),
                         screen = Screen.HomeScreen,
                     ),
@@ -136,8 +136,8 @@ class MainActivity : ComponentActivity() {
                         screen = Screen.LoginScreen,
                     ),
                     NavItem(
-                        label = "Profile",
-                        icon = Icons.Filled.Person,
+                        label = "Exercises",
+                        icon = excercises(),
                         screen = Screen.ExerciseScreen,
                     )
                 )
@@ -172,7 +172,7 @@ class MainActivity : ComponentActivity() {
                                         viewModel.signIn(name, email, username, password)
                              })
                             }
-                            composable(Screen.ProfileScreen.route) { ProfileScreen() }
+                            composable(Screen.ExerciseScreen.route) { ExerciseScreen() }
                         }
                     }
                 }
@@ -368,6 +368,11 @@ fun login(): ImageVector {
     return ImageVector.vectorResource(id = R.drawable.baseline_login_24)
 }
 
+@Composable
+fun excercises(): ImageVector {
+    return ImageVector.vectorResource(id = R.drawable.baseline_sports_gymnastics_24)
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -473,7 +478,7 @@ fun ExerciseBox(
             .padding(10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.LightGray)
+            .background(Color(226, 190, 241))
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row(
