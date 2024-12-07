@@ -2,9 +2,9 @@ package com.example.a6starter.ui.screens.main
 
 
 import android.os.Build import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,10 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.a6starter.GymGrid
+import com.example.a6starter.data.remote.GymApi
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -46,111 +48,106 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
 @Composable
 fun ProfileScreen(){
 
-}
-
-@Composable
-fun LoginScreen(username: (String) -> Unit, password: (String) -> Unit) {
+}@Composable
+fun LoginScreen(
+    username: (String) -> Unit,
+    password: (String) -> Unit,
+    onSignIn: (String, String, String, String) -> Unit
+) {
     var uname by remember { mutableStateOf("") }
     var pword by remember { mutableStateOf("") }
-    var showNameScreen by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var showSignUpFields by remember { mutableStateOf(false) }
 
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
-            if (showNameScreen) {
-                Name()
-                Email()
-            }
+        if (showSignUpFields) {
+            Name { name = it }
+            Email { email = it }
+        }
 
+        TextField(
+            value = uname,
+            onValueChange = {
+                uname = it
+                username(it)
+            },
+            placeholder = { Text("Enter Username") },
+            modifier = Modifier
+                .fillMaxWidth()
+            .padding(vertical = 8.dp)
+        )
 
-            TextField(
-                value = uname,
-                onValueChange = {
-                    uname = it
-                    username(it)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                placeholder = { Text("Enter Username") }
-            )
+        TextField(
+            value = pword,
+            onValueChange = {
+                pword = it
+                password(it)
+            },
+            placeholder = { Text("Enter Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        )
 
+        Button(
+            onClick = {
+                if (showSignUpFields) {
+                    onSignIn(name, email, uname, pword)
+                } else {
+                    // Trigger login logic here
+                }
+            },
+            enabled = uname.isNotBlank() && pword.isNotBlank() &&
+                    (!showSignUpFields || (name.isNotBlank() && email.isNotBlank())),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        ) {
+            Text(if (showSignUpFields) "Sign Up" else "Login")
+        }
 
-            TextField(
-                value = pword,
-                onValueChange = {
-                    pword = it
-                    password(it)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                placeholder = { Text("Enter Password") },
-                visualTransformation = PasswordVisualTransformation()
-            )
-
-
-            Button(
-                onClick = {
-                },
-                enabled = uname.isNotBlank() && pword.isNotBlank(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("Login")
-            }
-
-
-            Button(
-                onClick = {
-                    showNameScreen = true
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("Sign Up")
-            }
+        Button(
+            onClick = { showSignUpFields = !showSignUpFields },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (showSignUpFields) "Go to Login" else "Sign Up")
         }
     }
 }
-
-
 @Composable
-fun Name() {
+fun Name(onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
-
 
     TextField(
         value = text,
         onValueChange = {
             text = it
+            onValueChange(it)
         },
         placeholder = { Text("Enter Name") },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp)
     )
 }
 
-
 @Composable
-fun Email() {
+fun Email(onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
-
 
     TextField(
         value = text,
         onValueChange = {
             text = it
+            onValueChange(it)
         },
         placeholder = { Text("Enter Email") },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp)
     )
 }

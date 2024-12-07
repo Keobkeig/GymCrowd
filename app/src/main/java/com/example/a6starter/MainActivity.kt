@@ -43,6 +43,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Gym
+import com.example.a6starter.ui.screens.main.LogInScreenViewModel
 import com.example.a6starter.ui.screens.main.LoginScreen
 import com.example.a6starter.ui.screens.main.MainScreen
 import com.example.a6starter.ui.screens.main.ProfileScreen
@@ -136,11 +138,14 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screen.HomeScreen.route
                         ) {
                             composable(Screen.HomeScreen.route) { MainScreen() } //Change to mainscreen once it's fully implemented
-                            composable(Screen.LoginScreen.route) { LoginScreen(
-                                username = { username = it },
-                                password = { password = it }
-
-                            ) }
+                            composable(Screen.LoginScreen.route) {
+                                val viewModel: LogInScreenViewModel = hiltViewModel()
+                                LoginScreen( username = { viewModel.updateUsername(it) },
+                                    password = { viewModel.updatePassword(it) },
+                                    onSignIn = { name: String, email: String, username: String, password: String ->
+                                        viewModel.signIn(name, email, username, password)
+                             })
+                            }
                             composable(Screen.ProfileScreen.route) { ProfileScreen() }
                         }
                     }

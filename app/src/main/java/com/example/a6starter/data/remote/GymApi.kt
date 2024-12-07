@@ -2,14 +2,18 @@ package com.example.a6starter.data.remote
 
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Gym
+import com.example.a6starter.data.entities.LogInRequest
+import com.example.a6starter.data.entities.LoggedIn
+import com.example.a6starter.data.entities.SignUpRequest
+import com.example.a6starter.data.entities.SignedIn
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface GymApi {
     // TODO specify your API
@@ -37,6 +41,16 @@ interface GymApi {
     suspend fun createCrowdData(
 //        @Body crowdDataRequest: CrowdDataRequest
     ): Response<CrowdData>
+
+    @POST("users/login/")
+    suspend fun logIn(
+        @Body requestBody: LogInRequest
+    ): Response<List<LoggedIn>>
+
+    @POST("users/signup/")
+    suspend fun signIn(
+        @Body requestBody: SignUpRequest
+    ): Response<List<SignedIn>>
 
     // Get details of specific crowd data
     @GET("crowd-data/{id}/")
