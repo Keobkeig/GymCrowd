@@ -61,5 +61,11 @@ interface GymApi {
 
     @GET("workouts/exercise/")
     suspend fun getExercises(): Response<List<Exercise>>
+
+    @GET("workouts/exercises/{id}/")
+    suspend fun getSpecificExercise(
+        @Path("id") exerciseId: Int
+    ): Response<Exercise>
+
 }
 

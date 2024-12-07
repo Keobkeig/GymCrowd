@@ -1,6 +1,7 @@
 package com.example.a6starter.data.model
 
 
+import android.util.Log
 import com.example.a6starter.data.entities.Exercise
 import com.example.a6starter.data.entities.Gym
 import com.example.a6starter.data.remote.GymApi
@@ -20,4 +21,37 @@ class GymRepository @Inject constructor(
         return gymApi.getExercises()
     }
 
+    // Define the function to fetch exercises for a specific page
+    suspend fun getExercises(page: Int): Response<List<Exercise>> {
+        // Calculate the starting and ending exercise IDs based on the page number
+        val startId = (page - 1) * 20
+        val endId = page * 20
+
+        // Create a list to hold the fetched exercises
+        val exercises = mutableListOf<Exercise>()
+
+        // Loop through the ID range and fetch each exercise
+        for (exerciseId in startId..endId) {
+            // Fetch the exercise for the current ID
+            val response = gymApi.getSpecificExercise(exerciseId)
+
+            // Log the response code and body for debugging
+            Log.d("API Debug", "Fetching exercise ID: $exerciseId")
+            Log.d("API Debug", "Response code: ${response.code()}")
+            Log.d("API Debug", "Response body: ${response.body()}")
+
+            // If the response is successful, add the exercise to the list
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    exercises.add(it)
+                }
+            } else {
+                // Handle the error case (for example, log or notify the user)
+                Log.e("API Error", "Failed to fetch exercise with ID: $exerciseId")
+            }
+        }
+
+        // Return the list of exercises
+        return Response.success(exercises)
+    }
 }

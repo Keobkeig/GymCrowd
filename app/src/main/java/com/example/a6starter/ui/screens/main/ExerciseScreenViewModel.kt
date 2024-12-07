@@ -18,18 +18,22 @@ data class ExerciseScreenViewState(
     val favorites: List<Exercise>,
     val allExercises: List<Exercise>,
     val isLoading: Boolean
-)
-
-@HiltViewModel
+)@HiltViewModel
 class ExerciseScreenViewModel @Inject constructor(
     private val gymRepository: GymRepository
 ) : ViewModel() {
 
+    companion object {
+        private const val PAGE_SIZE = 20
+    }
+
     private val favoritesFlow = MutableStateFlow<List<Exercise>>(emptyList())
     private val allExercisesFlow = MutableStateFlow<List<Exercise>>(emptyList())
     private val isLoadingFlow = MutableStateFlow(false)
+    private var currentPage = 1
+    private var hasMoreData = true
 
-    val mainScreenViewState: StateFlow<ExerciseScreenViewState> =
+    val exerciseScreenViewState: StateFlow<ExerciseScreenViewState> =
         combine(favoritesFlow, allExercisesFlow, isLoadingFlow) { favorites, allExercises, isLoading ->
             ExerciseScreenViewState(
                 favorites = favorites,
@@ -39,18 +43,15 @@ class ExerciseScreenViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.Eagerly, ExerciseScreenViewState(emptyList(), emptyList(), false))
 
     init {
-        loadExercises()
+        loadNextPage()
     }
 
     fun addFavoriteExercise(exerciseId: Int) {
-        // Find the exercise in allExercises
         val exercise = allExercisesFlow.value.find { it.exerciseId == exerciseId }
         exercise?.let { ex ->
-            // Add to favorites
             favoritesFlow.update { currentFavorites ->
                 currentFavorites + ex
             }
-            // Remove from all exercises
             allExercisesFlow.update { currentAllExercises ->
                 currentAllExercises.filterNot { it.exerciseId == exerciseId }
             }
@@ -58,35 +59,44 @@ class ExerciseScreenViewModel @Inject constructor(
     }
 
     fun removeFavoriteExercise(exerciseId: Int) {
-        // Find the exercise in favorites
         val exercise = favoritesFlow.value.find { it.exerciseId == exerciseId }
         exercise?.let { ex ->
-            // Remove from favorites
             favoritesFlow.update { currentFavorites ->
                 currentFavorites.filterNot { it.exerciseId == exerciseId }
             }
-            // Add back to all exercises
             allExercisesFlow.update { currentAllExercises ->
                 currentAllExercises + ex
             }
         }
     }
 
-    fun loadExercises() = viewModelScope.launch {
-        if (isLoadingFlow.value) return@launch
+    // Updated loadNextPage to use the new getExercises() method
+    fun loadNextPage() = viewModelScope.launch {
+        if (isLoadingFlow.value || !hasMoreData) return@launch
         isLoadingFlow.value = true
 
         try {
-            val response = gymRepository.getExercises()
+            // Fetch exercises for the current page
+            val response = gymRepository.getExercises(page = currentPage)
             if (response.isSuccessful) {
                 response.body()?.let { newExercises ->
-                    // Only add exercises that aren't already in favorites
-                    val exercisesToAdd = newExercises.filterNot { newExercise ->
-                        favoritesFlow.value.any { it.exerciseId == newExercise.exerciseId }
+                    if (newExercises.size < PAGE_SIZE) {
+                        hasMoreData = false // No more pages
                     }
+
+                    // Filter out exercises that are already in favorites or allExercises
+                    val exercisesToAdd = newExercises.filterNot { newExercise ->
+                        favoritesFlow.value.any { it.exerciseId == newExercise.exerciseId } ||
+                                allExercisesFlow.value.any { it.exerciseId == newExercise.exerciseId }
+                    }
+
+                    // Update allExercisesFlow with the new exercises
                     allExercisesFlow.update { currentExercises ->
                         currentExercises + exercisesToAdd
                     }
+
+                    // Increment the page for the next load
+                    currentPage++
                 }
             }
         } catch (e: Exception) {
