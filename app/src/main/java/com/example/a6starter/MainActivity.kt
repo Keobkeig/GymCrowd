@@ -31,6 +31,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -89,6 +93,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var username by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
             A6StarterTheme {
                 val tabs = listOf(
                     NavItem(
@@ -130,7 +136,11 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screen.HomeScreen.route
                         ) {
                             composable(Screen.HomeScreen.route) { MainScreen() } //Change to mainscreen once it's fully implemented
-                            composable(Screen.LoginScreen.route) { LoginScreen() }
+                            composable(Screen.LoginScreen.route) { LoginScreen(
+                                username = { username = it },
+                                password = { password = it }
+
+                            ) }
                             composable(Screen.ProfileScreen.route) { ProfileScreen() }
                         }
                     }
