@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -105,6 +106,9 @@ fun LoginScreen(
             },
             enabled = uname.isNotBlank() && pword.isNotBlank() &&
                     (!showSignUpFields || (name.isNotBlank() && email.isNotBlank())),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(226, 190, 241)  // Set the custom color here
+            ),
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         ) {
             Text(if (showSignUpFields) "Sign Up" else "Login")
@@ -112,7 +116,11 @@ fun LoginScreen(
 
         Button(
             onClick = { showSignUpFields = !showSignUpFields },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(226, 190, 241)
+            ),
             modifier = Modifier.fillMaxWidth()
+
         ) {
             Text(if (showSignUpFields) "Go to Login" else "Sign Up")
         }
