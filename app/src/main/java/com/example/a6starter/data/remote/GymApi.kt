@@ -1,6 +1,7 @@
 package com.example.a6starter.data.remote
 
 import com.example.a6starter.data.entities.CrowdData
+import com.example.a6starter.data.entities.Exercise
 import com.example.a6starter.data.entities.Gym
 import retrofit2.Response
 import retrofit2.http.Body
@@ -56,5 +57,9 @@ interface GymApi {
     suspend fun deleteCrowdData(
         @Path("id") crowdDataId: Int
     ): Response<Unit>
+
+
+    @GET("workouts/exercise/")
+    suspend fun getExercises(): Response<List<Exercise>>
 }
 
