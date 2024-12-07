@@ -1,6 +1,7 @@
 package com.example.a6starter.data.remote
 
 import com.example.a6starter.data.entities.CrowdData
+import com.example.a6starter.data.entities.Exercise
 import com.example.a6starter.data.entities.Gym
 import com.example.a6starter.data.entities.LogInRequest
 import com.example.a6starter.data.entities.LoggedIn
@@ -70,5 +71,15 @@ interface GymApi {
     suspend fun deleteCrowdData(
         @Path("id") crowdDataId: Int
     ): Response<Unit>
+
+
+    @GET("workouts/exercise/")
+    suspend fun getExercises(): Response<List<Exercise>>
+
+    @GET("workouts/exercises/{id}/")
+    suspend fun getSpecificExercise(
+        @Path("id") exerciseId: Int
+    ): Response<Exercise>
+
 }
 
