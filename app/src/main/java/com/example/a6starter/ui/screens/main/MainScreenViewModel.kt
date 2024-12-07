@@ -41,5 +41,4 @@ class MainScreenViewModel @Inject constructor(
 
         }
     }
-
 }

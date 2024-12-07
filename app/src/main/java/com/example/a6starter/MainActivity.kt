@@ -73,6 +73,8 @@ import androidx.navigation.toRoute
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Exercise
 import com.example.a6starter.data.entities.Gym
+
+import com.example.a6starter.ui.screens.main.LogInScreenViewModel
 import com.example.a6starter.ui.screens.main.ExerciseScreenViewModel
 import com.example.a6starter.ui.screens.main.LoginScreen
 import com.example.a6starter.ui.screens.main.MainScreen
@@ -163,13 +165,14 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(Screen.HomeScreen.route) { MainScreen() } //Change to mainscreen once it's fully implemented
                             composable(Screen.LoginScreen.route) {
-                                LoginScreen(
-                                    username = { username = it },
-                                    password = { password = it }
-
-                                )
+                                val viewModel: LogInScreenViewModel = hiltViewModel()
+                                LoginScreen( username = { viewModel.updateUsername(it) },
+                                    password = { viewModel.updatePassword(it) },
+                                    onSignIn = { name: String, email: String, username: String, password: String ->
+                                        viewModel.signIn(name, email, username, password)
+                             })
                             }
-                            composable(Screen.ExerciseScreen.route) { ExerciseScreen() }
+                            composable(Screen.ProfileScreen.route) { ProfileScreen() }
                         }
                     }
                 }

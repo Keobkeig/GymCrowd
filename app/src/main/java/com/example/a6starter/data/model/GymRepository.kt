@@ -4,6 +4,10 @@ package com.example.a6starter.data.model
 import android.util.Log
 import com.example.a6starter.data.entities.Exercise
 import com.example.a6starter.data.entities.Gym
+import com.example.a6starter.data.entities.LogInRequest
+import com.example.a6starter.data.entities.LoggedIn
+import com.example.a6starter.data.entities.SignUpRequest
+import com.example.a6starter.data.entities.SignedIn
 import com.example.a6starter.data.remote.GymApi
 import retrofit2.Response
 import javax.inject.Inject
@@ -17,6 +21,14 @@ class GymRepository @Inject constructor(
         return gymApi.getGyms();
     }
 
+    suspend fun signIn(signUpRequest: SignUpRequest): Response<List<SignedIn>> {
+        return gymApi.signIn(signUpRequest)
+    }
+
+    suspend fun logIn(logInRequest: LogInRequest): Response<List<LoggedIn>> {
+        return gymApi.logIn(logInRequest)
+    }    
+       
     suspend fun getExercises(): Response<List<Exercise>> {
         return gymApi.getExercises()
     }
