@@ -6,7 +6,7 @@ Real-time gym crowd tracking for efficient workout planning.
 ---
 
 ## Repositories  
-- **Frontend Repository**: [Link to Android repo (This)](https://github.com/CamdenKeller/GymCrowd/tree/new-master)  
+- **Frontend Repository**: [Link to Android repo (This)](https://github.com/Keobkeig/GymCrowd/)  
 - **Backend Repository**: [Link to Backend repo](https://github.com/AdeebK1129/GymCrowd-backend)
 
 ---
