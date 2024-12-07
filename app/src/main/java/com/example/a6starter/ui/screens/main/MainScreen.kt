@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.a6starter.GymGrid
 import com.example.a6starter.data.remote.GymApi
 
@@ -47,13 +48,12 @@ fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun ProfileScreen(){
-
-}@Composable
 fun LoginScreen(
+    navController: NavController,
     username: (String) -> Unit,
     password: (String) -> Unit,
-    onSignIn: (String, String, String, String) -> Unit
+    onSignIn: (String, String, String, String) -> Unit,
+    onLogin: (String, String) -> Unit // Callback to handle login
 ) {
     var uname by remember { mutableStateOf("") }
     var pword by remember { mutableStateOf("") }
@@ -62,70 +62,65 @@ fun LoginScreen(
     var showSignUpFields by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Show Name and Email fields only when creating a new account
         if (showSignUpFields) {
-            Name { name = it }
-            Email { email = it }
+            Name(onValueChange = { name = it })
+            Email(onValueChange = { email = it })
+        } else {
+            UserName(value = uname, onValueChange = { uname = it })
+            Password(value = pword, onValueChange = { pword = it })
         }
 
-        TextField(
-            value = uname,
-            onValueChange = {
-                uname = it
-                username(it)
-            },
-            placeholder = { Text("Enter Username") },
-            modifier = Modifier
-                .fillMaxWidth()
-            .padding(vertical = 8.dp)
-        )
-
-        TextField(
-            value = pword,
-            onValueChange = {
-                pword = it
-                password(it)
-            },
-            placeholder = { Text("Enter Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
+        // Action button (Login or Sign Up)
         Button(
             onClick = {
                 if (showSignUpFields) {
-                    onSignIn(name, email, uname, pword)
+                    if (name.isNotBlank() && email.isNotBlank()) {
+                        onSignIn(name, email, uname, pword)
+                        navController.navigate("HomeScreen")
+                    }
                 } else {
-                    // Trigger login logic here
+                    if (uname.isNotBlank() && pword.isNotBlank()) {
+                        onLogin(uname, pword)
+                        navController.navigate("HomeScreen")
+                    }
                 }
             },
-            enabled = uname.isNotBlank() && pword.isNotBlank() &&
-                    (!showSignUpFields || (name.isNotBlank() && email.isNotBlank())),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(226, 190, 241)  // Set the custom color here
+                containerColor = Color(255, 190, 241)
             ),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
         ) {
             Text(if (showSignUpFields) "Sign Up" else "Login")
         }
 
+        // Toggle between Sign Up and Login
         Button(
-            onClick = { showSignUpFields = !showSignUpFields },
+            onClick = {
+                if (showSignUpFields) {
+                    name = ""
+                    email = ""
+                }
+                showSignUpFields = !showSignUpFields
+            },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(226, 190, 241)
+                containerColor = Color(255, 190, 241)  // Custom color
             ),
             modifier = Modifier.fillMaxWidth()
-
         ) {
             Text(if (showSignUpFields) "Go to Login" else "Sign Up")
         }
     }
 }
+
 @Composable
 fun Name(onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
@@ -157,5 +152,38 @@ fun Email(onValueChange: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+    )
+}
+
+@Composable
+fun Password(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text("Enter Password") },
+        visualTransformation = PasswordVisualTransformation(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    )
+}
+
+@Composable
+fun UserName(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text("Enter Username") },
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
     )
 }

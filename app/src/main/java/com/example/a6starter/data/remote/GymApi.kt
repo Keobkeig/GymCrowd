@@ -17,12 +17,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface GymApi {
-    // TODO specify your API
-    //  This time you will want your function to take in a parameter for the page number, since we
-    //  are dealing with paginated data.
-    //  Annotate the parameter with @Query("page[number]") to tell Retrofit how to put the parameter
-    //  in the API Request.
-
     // Get a list of gyms
     @GET("gyms/")
     suspend fun getGyms(): Response<List<Gym>>
@@ -49,7 +43,7 @@ interface GymApi {
     ): Response<List<LoggedIn>>
 
     @POST("users/signup/")
-    suspend fun signIn(
+    suspend fun signUp(
         @Body requestBody: SignUpRequest
     ): Response<List<SignedIn>>
 

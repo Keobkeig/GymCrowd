@@ -21,16 +21,12 @@ class GymRepository @Inject constructor(
         return gymApi.getGyms();
     }
 
-    suspend fun signIn(signUpRequest: SignUpRequest): Response<List<SignedIn>> {
-        return gymApi.signIn(signUpRequest)
+    suspend fun signUp(signUpRequest: SignUpRequest): Response<List<SignedIn>> {
+        return gymApi.signUp(signUpRequest)
     }
 
     suspend fun logIn(logInRequest: LogInRequest): Response<List<LoggedIn>> {
         return gymApi.logIn(logInRequest)
-    }    
-       
-    suspend fun getExercises(): Response<List<Exercise>> {
-        return gymApi.getExercises()
     }
 
     // Define the function to fetch exercises for a specific page

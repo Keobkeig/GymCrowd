@@ -27,14 +27,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -69,7 +65,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.a6starter.data.entities.CrowdData
 import com.example.a6starter.data.entities.Exercise
 import com.example.a6starter.data.entities.Gym
@@ -78,11 +73,7 @@ import com.example.a6starter.ui.screens.main.LogInScreenViewModel
 import com.example.a6starter.ui.screens.main.ExerciseScreenViewModel
 import com.example.a6starter.ui.screens.main.LoginScreen
 import com.example.a6starter.ui.screens.main.MainScreen
-import com.example.a6starter.ui.screens.main.MainScreenViewModel
-import com.example.a6starter.ui.screens.main.ProfileScreen
 import com.example.a6starter.ui.theme.A6StarterTheme
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -166,11 +157,18 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.HomeScreen.route) { MainScreen() } //Change to mainscreen once it's fully implemented
                             composable(Screen.LoginScreen.route) {
                                 val viewModel: LogInScreenViewModel = hiltViewModel()
-                                LoginScreen( username = { viewModel.updateUsername(it) },
+
+                                LoginScreen(
+                                    navController = navController,
+                                    username = { viewModel.updateUsername(it) },
                                     password = { viewModel.updatePassword(it) },
-                                    onSignIn = { name: String, email: String, username: String, password: String ->
-                                        viewModel.signIn(name, email, username, password)
-                             })
+                                    onSignIn = { name, email, username, password ->
+                                        viewModel.signUp(name, email, username, password)
+                                    },
+                                    onLogin = { username, password ->
+                                        viewModel.logIn(username, password)
+                                    }
+                                )
                             }
                             composable(Screen.ExerciseScreen.route) { ExerciseScreen() }
                         }
