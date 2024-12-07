@@ -14,15 +14,18 @@ Real-time gym crowd tracking for efficient workout planning.
 ## Screenshots  
 ![Main Feature]()  
 *Screenshot 1: Home screen displaying gym crowd levels.*
+
 <img width="213" alt="Screenshot 2024-12-06 at 11 43 16 PM" src="https://github.com/user-attachments/assets/5b793b73-c7a9-472c-b8f3-7d317e586944">
 
 
 ![Additional Feature]()  
 *Screenshot 2: Login/SignUp Page.*
+
 <img width="217" alt="Screenshot 2024-12-06 at 11 43 26 PM" src="https://github.com/user-attachments/assets/40723ccd-946f-49d0-a221-a4bd8f087128">
 
 ![Additional Feature]
 *Screenshot 2: Excercises Lazylist.*
+
 <img width="212" alt="Screenshot 2024-12-06 at 11 43 37 PM" src="https://github.com/user-attachments/assets/10ee1d06-2a23-457d-8218-7ff64cabc056">
 
 
